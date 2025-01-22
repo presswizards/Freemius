@@ -4,6 +4,7 @@
     "description": "Freemius Integration for Freescout",
     "version": "1.0.3",
     "detailsUrl": "https://github.com/Creative-Motion-Development/freemius-module",
+    "img" : "https://img.freemius.com/brand-assets/icons/freemius-icon-light-background.png",
     "author": "Webtemyk",
     "authorUrl": "https://github.com/temyk",
     "requiredAppVersion": "1.0.3",
