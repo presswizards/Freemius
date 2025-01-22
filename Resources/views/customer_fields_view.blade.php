@@ -8,7 +8,7 @@
                 </a>
             </div>
         </div>
-        <div id="collapseOne" class="freemius-panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+        <div id="collapseOne" class="freemius-panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
             <div class="freemius-panel-body">
                 <ul class="freemius-list">
                     <li>
