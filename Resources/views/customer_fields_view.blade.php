@@ -42,7 +42,7 @@
                                                href="#collapsePlugins"
                                                aria-expanded="true" aria-controls="collapsePlugins">
                                                 <div class="freemius-plugin-icon"
-                                                     style="background-image: url('https:{{$plugin->icon}}');">&nbsp;
+                                                     style="background-image: url('{{$plugin->icon}}');">&nbsp;
                                                 </div>{{$plugin->title}}
                                             </a>
                                         </div>
