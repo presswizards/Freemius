@@ -2,7 +2,7 @@
     "name": "Freemius Integration",
     "alias": "freemius",
     "description": "Freemius Integration for Freescout",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "detailsUrl": "https://github.com/presswizards/freemius-freescout/",
     "img" : "https://img.freemius.com/brand-assets/icons/freemius-icon-light-background.png",
     "author": "Webtemyk",
