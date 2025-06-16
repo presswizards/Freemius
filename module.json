@@ -19,7 +19,7 @@
     "files": [
         "start.php"
     ],
-    "latestVersionUrl": "https://raw.githubusercontent.com/presswizards/freemius-freescout/refs/heads/main/module.json",
+    "latestVersionUrl": "https://raw.githubusercontent.com/presswizards/freemius-freescout/refs/heads/master/module.json",
     "latestVersionZipUrl": "https://github.com/presswizards/freemius-freescout/archive/refs/heads/main.zip",
     "changelogUrl": "https://github.com/presswizards/freemius-freescout/blob/main/changelog.txt",
     "requires": []
