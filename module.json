@@ -3,10 +3,10 @@
     "alias": "freemius",
     "description": "Freemius Integration for Freescout",
     "version": "1.0.4",
-    "detailsUrl": "https://github.com/presswizards/freemius-freescout/",
+    "detailsUrl": "https://github.com/presswizards/Freemius/",
     "img" : "https://img.freemius.com/brand-assets/icons/freemius-icon-light-background.png",
     "author": "presswizards",
-    "authorUrl": "https://github.com/presswizards/freemius-freescout/",
+    "authorUrl": "https://github.com/presswizards/Freemius/",
     "requiredAppVersion": "1.8",
     "license": "AGPL-3.0",
     "keywords": [],
@@ -19,8 +19,8 @@
     "files": [
         "start.php"
     ],
-    "latestVersionUrl": "https://raw.githubusercontent.com/presswizards/freemius-freescout/refs/heads/master/module.json",
-    "latestVersionZipUrl": "https://github.com/presswizards/freemius-freescout/archive/refs/heads/master.zip",
-    "changelogUrl": "https://github.com/presswizards/freemius-freescout/blob/main/changelog.txt",
+    "latestVersionUrl": "https://raw.githubusercontent.com/presswizards/Freemius/refs/heads/master/module.json",
+    "latestVersionZipUrl": "https://github.com/presswizards/Freemius/archive/refs/heads/master.zip",
+    "changelogUrl": "https://github.com/presswizards/Freemius/blob/main/changelog.txt",
     "requires": []
 }
