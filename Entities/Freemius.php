@@ -215,7 +215,8 @@ final class Freemius
             }
         }
 
-        $result = $this->loadModel('Site', $data->installs ?? [], "No installs found - ".count($data->installs ?? []));
+        // $result = $this->loadModel('Site', $data->installs ?? [], "No installs found - ".count($data->installs ?? []));
+        $result = $this->loadModel('Site', $data->installs ?? []);
 
         return $result;
     }
