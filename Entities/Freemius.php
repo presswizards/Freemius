@@ -132,7 +132,8 @@ final class Freemius
 
             $user = isset($users->users[0]) ? get_object_vars($users->users[0]) : [];
 
-            $result = $this->loadModel('User', $user, "Unable to find user");
+//            $result = $this->loadModel('User', $user, "Freemius: unable to find user");
+            $result = $this->loadModel('User', $user);
 
         }
 

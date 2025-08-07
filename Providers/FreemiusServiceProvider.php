@@ -176,7 +176,8 @@ class FreemiusServiceProvider extends ServiceProvider
      */
     public function getFreemiusUser($customer): ?User
     {
-        $user = $this->freemius->loadModel('User', $customer->getMeta('freemius_user', []), "Freemius user not found");
+        // $user = $this->freemius->loadModel('User', $customer->getMeta('freemius_user', []), "Freemius user not found");
+        $user = $this->freemius->loadModel('User', $customer->getMeta('freemius_user', []));
         if (isset($user->gross)) {
             $user->gross = round($user->gross, 2);
         }
