@@ -21,6 +21,6 @@
     ],
     "latestVersionUrl": "https://raw.githubusercontent.com/presswizards/Freemius/refs/heads/master/module.json",
     "latestVersionZipUrl": "https://github.com/presswizards/Freemius/archive/refs/heads/master.zip",
-    "changelogUrl": "https://github.com/presswizards/Freemius/blob/main/changelog.txt",
+    "changelogUrl": "https://github.com/presswizards/Freemius/blob/master/changelog.txt",
     "requires": []
 }

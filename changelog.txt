@@ -1,0 +1,26 @@
+Freemius Integration for FreeScout - Changelog
+
+1.0.5 (2026-10-05)
+- Lookup Freemius user via all customer emails, not just the first one
+- Try each customer email in order, use first Freemius match found
+- Prefer exact email match in Freemius search results
+- Merge in production hardening: null guards in getFreemiusData, quieter logging, empty-plugins guard
+
+1.0.4 (2025-08-07)
+- Remove "user not found" messages from polluting log files
+- Remove "no installs found" messages from polluting log files
+
+1.0.3 (2023-04-26)
+- Fix plugins list and add HR below plugins
+- Fix plugin icons URL
+- Fix image on Modules list page
+
+1.0.2 (2022-12-13)
+- Fix "Go to Freemius" link when no active sites
+
+1.0.1 (2021-10-18)
+- Fix getRenewsIn on null
+- Add screenshot
+
+1.0.0 (2021-09-23)
+- Initial Freemius integration release
