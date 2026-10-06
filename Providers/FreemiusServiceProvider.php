@@ -128,18 +128,94 @@ class FreemiusServiceProvider extends ServiceProvider
     /**
      * Save freemius data for customer
      *
+     * Tries every email address on the customer in order and stores the
+     * first Freemius user found under any of them.
+     *
      * @param $customer Customer
      * @param $data array
      * @param $replace_data array
      */
     public function customer_set_data($customer, $data, $replace_data)
     {
-        $user = $this->freemius->findUserByEmail($data['emails'][0] ?? '');
+        $emails = $this->getCustomerEmails($customer, $data);
+        $user = $this->freemius->findUserByEmails($emails);
         if ($user) {
             $customer->setMeta('freemius_user', $user);
         } else {
             $customer->setMeta('freemius_user', '');
         }
+    }
+
+    /**
+     * Collect every known email address for the customer, preserving order
+     * and removing duplicates (case-insensitive).
+     *
+     * @param $customer Customer
+     * @param $data array
+     * @return array
+     */
+    public function getCustomerEmails($customer, $data = []): array
+    {
+        $emails = [];
+
+        if (!empty($data['emails']) && is_array($data['emails'])) {
+            foreach ($data['emails'] as $email) {
+                if (is_array($email)) {
+                    $email = $email['value'] ?? $email['email'] ?? '';
+                }
+                $emails[] = $email;
+            }
+        }
+
+        if ($customer) {
+            if (method_exists($customer, 'getEmailsAsArray')) {
+                try {
+                    foreach ((array) $customer->getEmailsAsArray() as $email) {
+                        $emails[] = $email;
+                    }
+                } catch (\Exception $e) {
+                    // Fall through to other email sources.
+                }
+            }
+
+            if (isset($customer->emails) && is_iterable($customer->emails)) {
+                try {
+                    foreach ($customer->emails as $emailObj) {
+                        $emails[] = is_object($emailObj) ? ($emailObj->email ?? '') : $emailObj;
+                    }
+                } catch (\Exception $e) {
+                    // Fall through to main email fallback.
+                }
+            }
+
+            if (method_exists($customer, 'getMainEmail')) {
+                try {
+                    $emails[] = $customer->getMainEmail();
+                } catch (\Exception $e) {
+                    // Ignore.
+                }
+            }
+        }
+
+        $normalized = [];
+        $seen = [];
+        foreach ($emails as $email) {
+            if (is_array($email)) {
+                $email = $email['value'] ?? $email['email'] ?? '';
+            }
+            $email = trim((string) $email);
+            if ($email === '') {
+                continue;
+            }
+            $key = strtolower($email);
+            if (isset($seen[$key])) {
+                continue;
+            }
+            $seen[$key] = true;
+            $normalized[] = $email;
+        }
+
+        return $normalized;
     }
 
     /**
@@ -150,7 +226,7 @@ class FreemiusServiceProvider extends ServiceProvider
     public function customer_profile_extra($customer)
     {
         if (empty($customer->getMeta('freemius_user', []))) {
-            $this->customer_set_data($customer, ['emails' => [$customer->getMainEmail()]], []);
+            $this->customer_set_data($customer, ['emails' => $this->getCustomerEmails($customer)], []);
             $customer->save();
         }
 

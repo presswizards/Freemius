@@ -116,13 +116,16 @@ final class Freemius
      */
     public function findUserByEmail($email, $cache = true)
     {
+        $email = trim((string) $email);
         if ($this->store_id && $email) {
             try {
+                $cacheKey = "freemius-{$this->store_id}-users-".strtolower($email);
+                $query = rawurlencode($email);
                 if ($cache) {
-                    $users = cache()->remember("freemius-{$this->store_id}-users-{$email}", self::CACHE_DURATION,
-                        fn() => $this->api->Api("stores/{$this->store_id}/users.json?format=json&search={$email}"));
+                    $users = cache()->remember($cacheKey, self::CACHE_DURATION,
+                        fn() => $this->api->Api("stores/{$this->store_id}/users.json?format=json&search={$query}"));
                 } else {
-                    $users = $this->api->Api("stores/{$this->store_id}/users.json?format=json&search={$email}");
+                    $users = $this->api->Api("stores/{$this->store_id}/users.json?format=json&search={$query}");
                 }
             } catch (Exception $e) {
                 logger()->error($e->getMessage());
@@ -130,14 +133,88 @@ final class Freemius
                 return null;
             }
 
-            $user = isset($users->users[0]) ? get_object_vars($users->users[0]) : [];
+            $user = $this->pickMatchingUser($users->users ?? [], $email);
 
-//            $result = $this->loadModel('User', $user, "Freemius: unable to find user");
+            //            $result = $this->loadModel('User', $user, "Freemius: unable to find user");
             $result = $this->loadModel('User', $user);
 
         }
 
         return $result ?? false;
+    }
+
+    /**
+     * Try multiple email addresses in order, returning the first Freemius
+     * user found under any of them.
+     *
+     * @param  array|string  $emails
+     * @param  bool  $cache
+     * @return User|false
+     */
+    public function findUserByEmails($emails, $cache = true)
+    {
+        if (!is_array($emails)) {
+            $emails = [$emails];
+        }
+
+        $normalized = [];
+        $seen = [];
+        foreach ($emails as $email) {
+            if (is_array($email)) {
+                $email = $email['value'] ?? $email['email'] ?? '';
+            }
+            $email = trim((string) $email);
+            if ($email === '') {
+                continue;
+            }
+            $key = strtolower($email);
+            if (isset($seen[$key])) {
+                continue;
+            }
+            $seen[$key] = true;
+            $normalized[] = $email;
+        }
+
+        foreach ($normalized as $email) {
+            $user = $this->findUserByEmail($email, $cache);
+            if ($user) {
+                return $user;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Pick the Freemius user matching the queried email. Falls back to the
+     * first search result for backwards compatibility with fuzzy search.
+     *
+     * @param  array  $users
+     * @param  string  $email
+     * @return array
+     */
+    private function pickMatchingUser($users, string $email): array
+    {
+        if (is_object($users)) {
+            $users = [$users];
+        }
+        if (!is_array($users) || empty($users)) {
+            return [];
+        }
+
+        foreach ($users as $candidate) {
+            $vars = is_object($candidate) ? get_object_vars($candidate) : (array) $candidate;
+            if (isset($vars['email']) && strcasecmp((string) $vars['email'], $email) === 0) {
+                return $vars;
+            }
+        }
+
+        $first = $users[0] ?? null;
+        if (is_object($first)) {
+            return get_object_vars($first);
+        }
+
+        return (array) ($first ?? []);
     }
 
     /**
