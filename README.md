@@ -12,6 +12,8 @@ To configure the global module settings, go to Manage > Settings > Freemius, and
 Once the module is configured, the Customer data from Freemius is displayed in the sidebar on the Customer editing and ticket pages (if it is found there).
 The first opening of the Customer page may take longer than usual, as requests are sent to Freemius.
 
+Customers with multiple email addresses are looked up under every email in order; the first Freemius match found under any of them is used.
+
 ## Requires
 - PHP CURL extension
 
