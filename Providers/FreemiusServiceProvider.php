@@ -252,8 +252,8 @@ class FreemiusServiceProvider extends ServiceProvider
      */
     public function getFreemiusUser($customer): ?User
     {
-        // $user = $this->freemius->loadModel('User', $customer->getMeta('freemius_user', []), "Freemius user not found");
-        $user = $this->freemius->loadModel('User', $customer->getMeta('freemius_user', []));
+//        $user = $this->freemius->loadModel('User', $customer->getMeta('freemius_user', []), "Freemius: Freemius user not found");
+	$user = $this->freemius->loadModel('User', $customer->getMeta('freemius_user', []));
         if (isset($user->gross)) {
             $user->gross = round($user->gross, 2);
         }
@@ -270,23 +270,29 @@ class FreemiusServiceProvider extends ServiceProvider
     {
         $result = [];
 
-        $plugins = $this->freemius->findPlugins();
-        $sites = $this->freemius->findSitesByUser($user);
-        $licenses = $this->freemius->findLicensesByUser($user);
+        $plugins = $this->freemius->findPlugins() ?? [];
+        $sites = $this->freemius->findSitesByUser($user) ?? [];
+        $licenses = $this->freemius->findLicensesByUser($user) ?? [];
         if ($licenses) {
             foreach ((array) $licenses as $license) {
-                $plugin = $plugins[$license->plugin_id];
+                $plugin = $plugins[$license->plugin_id] ?? null;
+                if (!$plugin) {
+                    continue;
+                }
                 $plugin->sites = [];
                 $result[$license->plugin_id] = $plugin;
             }
         }
         if ($sites) {
             foreach ((array) $sites as &$site) {
-                $plugin = $plugins[$site->plugin_id];
-                $plans = $this->freemius->findPlansByPlugin($site->plugin_id);
+                $plugin = $plugins[$site->plugin_id] ?? null;
+                if (!$plugin) {
+                    continue;
+                }
+                $plans = $this->freemius->findPlansByPlugin($site->plugin_id) ?? [];
 
-                $site->license = $site->license_id ? $licenses[$site->license_id] : [];
-                $site->plan = $plans[$site->plan_id];
+                $site->license = $site->license_id ? ($licenses[$site->license_id] ?? []) : [];
+                $site->plan = $plans[$site->plan_id] ?? [];
                 $plugin->sites = $sites;
 
                 $result[$site->plugin_id] = $plugin;

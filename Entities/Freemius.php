@@ -102,7 +102,7 @@ final class Freemius
             if ($model->load($data ?? [])) {
                 $result = $model;
             } else {
-                logger()->error($errorMessage);
+                //logger()->error($errorMessage);
             }
         }
 
@@ -135,8 +135,8 @@ final class Freemius
 
             $user = $this->pickMatchingUser($users->users ?? [], $email);
 
-            //            $result = $this->loadModel('User', $user, "Freemius: unable to find user");
-            $result = $this->loadModel('User', $user);
+//            $result = $this->loadModel('User', $user, "Freemius: User not found");
+	    $result = $this->loadModel('User', $user);
 
         }
 
@@ -233,6 +233,13 @@ final class Freemius
             }
         }
 
+        // Empty vendor responses are never cached: a Freemius blip once blanked the snippet for 24h. Retry next request instead.
+        if (empty($data->plugins)) {
+            if ($this->store_id) {
+                cache()->forget("freemius-{$this->store_id}-plugins");
+            }
+            return null;
+        }
         $result = $this->loadModel('Plugin', $data->plugins ?? [], "No plugins found - ".count($data->plugins ?? []));
 
         return $result;
@@ -292,7 +299,7 @@ final class Freemius
             }
         }
 
-        // $result = $this->loadModel('Site', $data->installs ?? [], "No installs found - ".count($data->installs ?? []));
+//        $result = $this->loadModel('Site', $data->installs ?? [], "No installs found - ".count($data->installs ?? []));
         $result = $this->loadModel('Site', $data->installs ?? []);
 
         return $result;
