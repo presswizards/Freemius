@@ -291,7 +291,7 @@ final class Freemius
         if ($this->store_id) {
             try {
                 $data = cache()->remember("freemius-{$this->store_id}-user-{$user_id}-sites", self::CACHE_DURATION,
-                    fn() => $this->api->Api("stores/{$this->store_id}/installs.json?format=json&user_id={$user_id}"));
+                    fn() => $this->api->Api("stores/{$this->store_id}/users/{$user_id}/installs.json?format=json&count=100"));
             } catch (Exception $e) {
                 logger()->error($e->getMessage());
                 logger()->error($e->getTraceAsString());
